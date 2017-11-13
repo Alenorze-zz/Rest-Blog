@@ -1,11 +1,9 @@
 from django.db.models import Q
 
-
 from rest_framework.filters import (
-        SearchFilter,
-        OrderingFilter,
-)
-
+    SearchFilter,
+    OrderingFilter
+    )
 from rest_framework.generics import (
     CreateAPIView,
     DestroyAPIView,
@@ -13,27 +11,44 @@ from rest_framework.generics import (
     UpdateAPIView,
     RetrieveAPIView,
     RetrieveUpdateAPIView
-)
-
+    )
 from rest_framework.permissions import (
     AllowAny,
     IsAuthenticated,
     IsAdminUser,
-    IsAuthenticatedOrReadOnly,
-)
-
+    IsAuthenticatedOrReadOnly
+    )
 
 from posts.api.permissions import IsOwnerOrReadOnly
 from posts.api.pagination import PostLimitOffsetPagination, PostPageNumberPagination
 
-
 from comments.models import Comment
-
 from .serializers import (
-    CommentSerializer
+    CommentSerializer,
+    CommentDetailSerializer,
+    create_comment_serializer
     )
 
+class CommentCreateAPIView(CreateAPIView):
+    queryset = Comment.objects.all()
+    # serializer_class = PostCreateUpdateSerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_serializer_class(self):
+        model_type = self.request.GET.get("type")
+        slug = self.request.GET.get("slug")
+        parent_id = self.request.GET.get("parent_id", None)
+        return create_comment_serializer(
+                model_type='post',
+                slug=None,
+                parent_id=None,
+                user = self.request.user
+                )
+        
+        
+
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
 
 class CommentDetailAPIView(RetrieveAPIView):
     queryset = Comment.objects.all()

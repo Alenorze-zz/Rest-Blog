@@ -1,11 +1,9 @@
 from django.db.models import Q
 
-
 from rest_framework.filters import (
     SearchFilter,
     OrderingFilter
-)
-
+    )
 from rest_framework.generics import (
     CreateAPIView,
     DestroyAPIView,
@@ -13,15 +11,13 @@ from rest_framework.generics import (
     UpdateAPIView,
     RetrieveAPIView,
     RetrieveUpdateAPIView
-)
-
+    )
 from rest_framework.permissions import (
     AllowAny,
     IsAuthenticated,
     IsAdminUser,
     IsAuthenticatedOrReadOnly
-)
-
+    )
 
 from posts.models import Post
 
@@ -32,7 +28,6 @@ from .serializers import (
     PostDetailSerializer, 
     PostListSerializer
 )
-
 
 
 class PostCreateAPIView(CreateAPIView):
