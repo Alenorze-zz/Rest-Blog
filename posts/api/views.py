@@ -1,8 +1,9 @@
 from django.db.models import Q
 
+
 from rest_framework.filters import (
-    SearchFilter,
-    OrderingFilter
+        SearchFilter,
+        OrderingFilter,
     )
 from rest_framework.generics import (
     CreateAPIView,
@@ -12,22 +13,27 @@ from rest_framework.generics import (
     RetrieveAPIView,
     RetrieveUpdateAPIView
     )
+
+
+
 from rest_framework.permissions import (
     AllowAny,
     IsAuthenticated,
     IsAdminUser,
-    IsAuthenticatedOrReadOnly
+    IsAuthenticatedOrReadOnly,
+
     )
 
 from posts.models import Post
 
 from .pagination import PostLimitOffsetPagination, PostPageNumberPagination
 from .permissions import IsOwnerOrReadOnly
+
 from .serializers import (
     PostCreateUpdateSerializer, 
     PostDetailSerializer, 
     PostListSerializer
-)
+    )
 
 
 class PostCreateAPIView(CreateAPIView):
@@ -43,6 +49,7 @@ class PostDetailAPIView(RetrieveAPIView):
     queryset = Post.objects.all()
     serializer_class = PostDetailSerializer
     lookup_field = 'slug'
+    #lookup_url_kwarg = "abc"
 
 
 class PostUpdateAPIView(RetrieveUpdateAPIView):
@@ -50,9 +57,11 @@ class PostUpdateAPIView(RetrieveUpdateAPIView):
     serializer_class = PostCreateUpdateSerializer
     lookup_field = 'slug'
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-    
+    #lookup_url_kwarg = "abc"
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
+        #email send_email
+
 
 
 class PostDeleteAPIView(DestroyAPIView):
@@ -60,16 +69,18 @@ class PostDeleteAPIView(DestroyAPIView):
     serializer_class = PostDetailSerializer
     lookup_field = 'slug'
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    #lookup_url_kwarg = "abc"
 
 
 class PostListAPIView(ListAPIView):
     serializer_class = PostListSerializer
-    filter_backends = [SearchFilter, OrderingFilter]
+    filter_backends= [SearchFilter, OrderingFilter]
     search_fields = ['title', 'content', 'user__first_name']
-    pagination_class = PostPageNumberPagination
+    pagination_class = PostPageNumberPagination #PageNumberPagination
 
     def get_queryset(self, *args, **kwargs):
-        queryset_list = Post.objects.all()
+        #queryset_list = super(PostListAPIView, self).get_queryset(*args, **kwargs)
+        queryset_list = Post.objects.all() #filter(user=self.request.user)
         query = self.request.GET.get("q")
         if query:
             queryset_list = queryset_list.filter(
@@ -79,4 +90,3 @@ class PostListAPIView(ListAPIView):
                     Q(user__last_name__icontains=query)
                     ).distinct()
         return queryset_list
-

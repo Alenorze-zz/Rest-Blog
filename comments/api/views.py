@@ -32,7 +32,7 @@ from comments.models import Comment
 
 
 from .serializers import (
-    CommentSerializer,
+    CommentListSerializer,
     CommentDetailSerializer,
     create_comment_serializer
     )
@@ -71,7 +71,7 @@ class CommentDetailAPIView(DestroyModelMixin, UpdateModelMixin, RetrieveAPIView)
 
 
 class CommentListAPIView(ListAPIView):
-    serializer_class = CommentSerializer
+    serializer_class = CommentListSerializer
     filter_backends= [SearchFilter, OrderingFilter]
     search_fields = ['content', 'user__first_name']
     pagination_class = PostPageNumberPagination #PageNumberPagination
