@@ -5,7 +5,7 @@ from rest_framework.serializers import (
     )
 
 
-from comments.api.serializers import CommentSerializer
+from comments.api.serializers import CommentListSerializer
 from comments.models import Comment
 
 from posts.models import Post
@@ -65,7 +65,7 @@ class PostDetailSerializer(ModelSerializer):
 
     def get_comments(self, obj):
         c_qs = Comment.objects.filter_by_instance(obj)
-        comments = CommentSerializer(c_qs, many=True).data
+        comments = CommentListSerializer(c_qs, many=True).data
         return comments
 
 

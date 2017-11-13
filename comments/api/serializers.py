@@ -117,7 +117,7 @@ class CommentDetailSerializer(ModelSerializer):
         try:
             return obj.content_object.get_api_urL()
         except:
-            return: None
+            return None
 
     def get_replies(self, obj):
         if obj.is_parent:
